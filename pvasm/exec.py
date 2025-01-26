@@ -81,7 +81,7 @@ class VMachine:
             self.regs[reg_idx] = self.ram[self.regs[inreg]]
 
         elif opcode == 9:  # INTERRUPT (pch)
-            if value == 0:
+            if value == 1:
                 # pch(ASCII, row, col)
                 self.pch(self.regs[reg_idx], self.regs[inreg] // 80, self.regs[inreg] % 80)
 

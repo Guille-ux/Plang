@@ -316,6 +316,43 @@ def translate(texto): #estoy pensando en prohibir calculos sin usar variables, p
 		nins += 1
 		outxt.append("JNQ AX REG BX\n")
 		nins += 1
+	elif txt[0] == "putchar":
+		outxt.append("MOV CX NUM 0\n")
+		outxt.append("MOV DX NUM 0\n")
+		nins += 2
+		try:
+			char_var = memanager.search_var(txt[1])
+			pos = memanager.search_var(txt[2])
+		except Exception:
+			raise Exception(texto + "     <------ faltan cosas crack")
+		pos_t = []
+		char_t = []
+		while char_var > 0:
+			char_t.append(char_var % 10)
+			char_var //= 10
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		char_t.reverse()
+		pos_t.reverse()
+		for i in char_t:
+			tmp = str(i)
+			outxt.append(f"ADD CX NUM {tmp}\n")
+			outxt.append("MUL CX REG IX\n")
+			nins += 2
+		outxt.append("DIV CX REG IX\n")
+		nins += 1
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD DX NUM {tmp}\n")
+			outxt.append("MUL DX REG IX\n")
+			nins += 2
+		outxt.append("DIV DX REG IX\n")
+		nins += 1
+		outxt.append("LOA AX REG CX\n")
+		outxt.append("LOA BX REG DX\n")
+		outxt.append("INT AX PUT BX\n")
+		nins += 3
 	elif memanager.search_var(txt[0]) >= 0:
 		pos = search_var(txt[0])
 		outxt.append("MOV CX NUM 0\n")

@@ -55,7 +55,7 @@ def asemble(line):
     elif vasm_strcmp(line, "INT", 3, 0):
         opcode = 9
         if vasm_strcmp(line, "PUT", 3, 7):
-            value = 0
+            value = 1
         else:
             return -3
 
@@ -85,7 +85,7 @@ def asemble(line):
         return -3
 
     # Comprobamos el registro de entrada para los saltos
-    if opcode == 7 or value == 1:
+    if opcode == 7 or value != 0:
         for reg, idx in registers.items():
             if vasm_strcmp(line, reg, len(reg), 11):
                 in_reg = idx
