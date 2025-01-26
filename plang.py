@@ -171,16 +171,152 @@ def translate(texto): #estoy pensando en prohibir calculos sin usar variables, p
 		except Exception:
 			raise Exception("FALTA EL NOMBRE DE EL TAG →  " + texto)
 	elif txt[0] == "jmp":
-		pass
+		outxt.append("MOV BX NUM 0")
+		nins += 1
+		pos = tager.view_pos(txt[1])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD BX NUM {tmp}\n")
+			outxt.append("MUL BX REG IX\n")
+			nins += 2
+		outxt.append("DIV BX REG IX\n")
+		nins += 1
+		outxt.append("JMP AX REG BX\n")
+		nins += 1
 	elif txt[0] == "jlt":
-		pass
+		outxt.append("MOV BX NUM 0\n")
+		outxt.append("MOV AX NUM 0\n")
+		nins += 2
+		pos = tager.view_pos(txt[2])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD BX NUM {tmp}\n")
+			outxt.append("MUL BX REG IX\n")
+			nins += 2
+		outxt.append("DIV BX REG IX\n")
+		nins += 1
+		apos = memanager(txt[1])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD AX NUM {tmp}\n")
+			outxt.append("MUL AX REG IX\n")
+			nins += 2
+		outxt.append("DIV AX REG IX\n")
+		nins += 1
+		outxt.append("JLT AX REG BX\n")
+		nins += 1
 	elif txt[0] == "jgt":
-		pass
+		outxt.append("MOV AX NUM 0\n")
+		outxt.append("MOV BX NUM 0\n")
+		nins += 2
+		pos = tager.view_pos(txt[2])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD BX NUM {tmp}\n")
+			outxt.append("MUL BX REG IX\n")
+			nins += 2
+		outxt.append("DIV BX REG IX\n")
+		nins += 1
+		apos = memanager(txt[1])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD AX NUM {tmp}\n")
+			outxt.append("MUL AX REG IX\n")
+			nins += 2
+		outxt.append("DIV AX REG IX\n")
+		nins += 1
+		outxt.append("JGT AX REG BX\n")
+		nins += 1
 	elif txt[0] == "jeq":
-		pass
+		outxt.append("MOV BX NUM 0\n")
+		outxt.append("MOV AX NUM 0\n")
+		nins += 2
+		pos = tager.view_pos(txt[2])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD BX NUM {tmp}\n")
+			outxt.append("MUL BX REG IX\n")
+			nins += 2
+		outxt.append("DIV BX REG IX\n")
+		nins += 1
+		apos = memanager(txt[1])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD AX NUM {tmp}\n")
+			outxt.append("MUL AX REG IX\n")
+			nins += 2
+		outxt.append("DIV AX REG IX\n")
+		nins += 1
+		outxt.append("JQT AX REG BX\n")
+		nins += 1
 	elif txt[0] == "jnq":
-		pass
-	elif search_var(txt[0]) >= 0:
+		outxt.append("MOV AX NUM 0\n")
+		outxt.append("MOV BX NUM 0\n")
+		nins += 2
+		pos = tager.view_pos(txt[2])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD BX NUM {tmp}\n")
+			outxt.append("MUL BX REG IX\n")
+			nins += 2
+		outxt.append("DIV BX REG IX\n")
+		nins += 1
+		apos = memanager(txt[1])
+		pos_t = []
+		while pos > 0:
+			pos_t.append(pos % 10)
+			pos //= 10
+		pos_t.reverse()
+		for i in pos_t:
+			tmp = str(i)
+			outxt.append(f"ADD AX NUM {tmp}\n")
+			outxt.append("MUL AX REG IX\n")
+			nins += 2
+		outxt.append("DIV AX REG IX\n")
+		nins += 1
+		outxt.append("JNQ AX REG BX\n")
+		nins += 1
+	elif memanager.search_var(txt[0]) >= 0:
 		pos = search_var(txt[0])
 		outxt.append("MOV CX NUM 0\n")
 		outxt.append("MOV DX NUM 0 \n")
@@ -226,6 +362,8 @@ def translate(texto): #estoy pensando en prohibir calculos sin usar variables, p
 			outxt.append("SUB AX REG BX\n")
 		else:
 			raise Exception("MAL PUESTA LA ORDEN: " + texto)
+		nins += 1
+		outxt.append("STR CX REG AX\n")
 		nins += 1
 	if not at and texto != '\n':
 		raise Exception("LA ORDEN NO ES VALIDA")
