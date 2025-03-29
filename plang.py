@@ -1,13 +1,28 @@
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+# Copyright (c) 2025 Guillermo Leira Temes
+# 
+
 # RAM LIMITADA 512 números de 32 bits
 # evitar cosas raras
-# no existe entrada de usuario
+# no existe entrada de usuario, para cambiarlo simplemente cambias SIZE por el tamaño deseado
 
 import math
 
+SIZE = 512
+
 class Vars:
 	def __init__(self):
-		self.varnames = [""] * 512
-		self.is_free = [1] * 512
+		self.varnames = [""] * SIZE
+		self.is_free = [1] * SIZE
 	def new_var(self, name):
 		if name in self.varnames:
 			return -1
@@ -37,7 +52,10 @@ class TagManager:
 		self.tags.append(name)
 		self.pos.append(pos)
 	def view_pos(self, name):
-		return self.pos[self.tags.index(name)]
+		try:
+			return self.pos[self.tags.index(name)]
+		except Exception:
+			return 0
 
 global memanager
 memanager = Vars()
@@ -45,12 +63,18 @@ global tager
 tager = TagManager()
 
 global nins
-nins = 0
+nins = 2
 
 def compile(file, out):
 	f = open(file, "r")
 	lines = f.readlines()
 	outlines = []
+	for i in lines:
+		try:
+			translate(i)
+		except Exception:
+			pass
+	nins = 2
 	for i in range(len(lines)):
 		outlines.append(translate(lines[i]))
 	f.close()
@@ -63,6 +87,7 @@ def translate(texto): #estoy pensando en prohibir calculos sin usar variables, p
 	global nins
 	global memanager
 	global tager
+	ac = nins
 	at = False
 	txt = texto.split(" ")
 	ltxt = len(txt)
@@ -166,10 +191,8 @@ def translate(texto): #estoy pensando en prohibir calculos sin usar variables, p
 			raise ValueError(texto + " la variable no esta indicada")
 		at = True
 	elif txt[0] == "tag":
-		try:
-			tager.new_tag(txt[1], nins)
-		except Exception:
-			raise Exception("FALTA EL NOMBRE DE EL TAG →  " + texto)
+		at = True
+		tager.new_tag(txt[1], nins)
 	elif txt[0] == "jmp":
 		outxt.append("MOV BX NUM 0")
 		nins += 1
@@ -404,6 +427,9 @@ def translate(texto): #estoy pensando en prohibir calculos sin usar variables, p
 		nins += 1
 	if not at and texto != '\n':
 		raise Exception("LA ORDEN NO ES VALIDA")
+	for i in range(25-(nins-ac)):
+		nins += 1
+		outxt.append("MOV AX NUM 0\n")
 	return "".join(outxt)
 
 fi = "nada.txt"

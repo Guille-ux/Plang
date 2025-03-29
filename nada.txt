@@ -1,12 +1,1 @@
-var_num hola 500
-var_num chasca 20
-var_num inc 1
-var_var condition chasca
-chasca += hola
-tag blabla
-remove condition
-hola += inc
-var_var condition chasca
-condition -= hola
-jgt condition blabla
-
+var_num hola 65535
